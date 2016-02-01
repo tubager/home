@@ -1,0 +1,203 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<style>
+		.tbg-p-list{
+			margin-top: 5px;
+		}
+		.tbg-p-header, .tbg-p-body{
+			padding: 5px;
+		}
+		.tbg-p:nth-child(7n+1){
+			border-left: 1px solid #0a9dc7;
+		}
+		.tbg-p:nth-child(7n+2){
+			border-left: 1px solid #ad5f00;
+		}
+		.tbg-p:nth-child(7n+3){
+			border-left: 1px solid #adad00;
+		}
+		.tbg-p:nth-child(7n+4){
+			border-left: 1px solid #00ad00;
+		}
+		.tbg-p:nth-child(7n+5){
+			border-left: 1px solid #adad00;
+		}
+		.tbg-p:nth-child(7n+6){
+			border-left: 1px solid #ad5f00;
+		}
+		.tbg-p:nth-child(7n+7){
+			border-left: 1px solid #ad0000;
+		}
+		.tbg-p:nth-child(7n+1) .tbg-p-divider{
+			border-top: 2px solid #0a9dc7;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+2) .tbg-p-divider{
+			border-top: 2px solid #ad5f00;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+3) .tbg-p-divider{
+			border-top: 2px solid #adad00;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+4) .tbg-p-divider{
+			border-top: 2px solid #00ad00;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+5) .tbg-p-divider{
+			border-top: 2px solid #adad00;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+6) .tbg-p-divider{
+			border-top: 2px solid #ad5f00;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+7) .tbg-p-divider{
+			border-top: 2px solid #ad0000;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		.tbg-p:nth-child(7n+1) .tbg-p-title{
+			color: #0a9dc7;
+		}
+		.tbg-p:nth-child(7n+2) .tbg-p-title{
+			color: #ad5f00;
+		}
+		.tbg-p:nth-child(7n+3) .tbg-p-title{
+			color: #adad00;
+		}
+		.tbg-p:nth-child(7n+4) .tbg-p-title{
+			color: #00ad00;
+		}
+		.tbg-p:nth-child(7n+5) .tbg-p-title{
+			color: #adad00;
+		}
+		.tbg-p:nth-child(7n+6) .tbg-p-title{
+			color: #ad5f00;
+		}
+		.tbg-p:nth-child(7n+7) .tbg-p-title{
+			color: #ad0000;
+		}
+		.tbg-p-time{
+			font-size: 12px;
+			margin: 0px;
+		}
+		#search-bar{
+			margin: 3px;
+		}
+		.tbg-header-btn{
+			color: white;
+			font-size: 18px;
+		}
+		.tbg-timeline-title{
+			text-align: center;
+			font-family: 微软雅黑;
+		}
+		.tbg-p-header button{
+			color: grey;
+		}
+	</style>
+</head>
+<body>
+
+<div ng-app="tubager"  ng-controller="myCtrl">
+    <div>
+		<h4 style="text-align: center;">{{article.title}}</h4>
+	</div>
+	<div class="tbg-p-list" style="margin:10px;">
+	   	<div class="tbg-p" ng-repeat="p in article.paragraphs" type="item-text-wrap">
+	   		<div class="tbg-p-header">
+		   		<div class="tbg-p-title">{{p.title}}</div>
+		   		<div style="">
+		   			<div class="tbg-p-time" style="float: left;margin-top:13px;">{{p.timeStamp? p.timeStamp.split(".")[0].replace("T", " ") :""}}</div>
+		   		</div>
+	   		</div>
+	   		<div class="tbg-p-divider"></div>
+	   		<div class="tbg-p-body">
+		   		<div class="" ng-repeat="img in p.images" type="item-text-wrap">
+		   			<img src="{{location.origin + '/resource/filebyname?name=' + img.url}}" style="max-width:100%;"/>
+		   			<p>{{img.title}}</p>
+		   		</div>
+		   		<p>{{p.text}}</p>
+		   		<div ng-if="p.vedio != null">
+		   			<video ng-src="{{p.vedio}}" style="width:100%;" controls="controls"></video>
+		   		</div>
+		   		<div class="" ng-repeat="sound in p.sounds" type="item-text-wrap">
+		   			<audio src="{{location.origin + '/resource/filebyname?name=' + sound.url}}" style="width:80%;margin-top:8px;" controls="controls"></audio>
+		   			<p>{{sound.title}}</p>
+		   		</div>
+	   		</div>
+	   	</div>
+	  </div>
+</div>
+<script>
+	var app = angular.module('tubager', []);
+	app.controller('myCtrl', function($scope, $http) {
+	    $scope.article = {};
+	    var uuid = QueryString("uuid");
+	    var url = location.origin + "/resource/book/" + uuid;
+	    $http.get(url,{headers:{'Accept': 'application/json;charset=UTF-8'},data:{}}).then(function(data){
+	    	var article = data.data;
+	    	article.paragraphs.map(function(p){
+	    		console.log(p.timeStamp);
+	    		var img = [];
+	    		if(p.img && p.img.length > 0){
+	    			img = p.img.split("|||");
+		    	}
+		    	var imgText = [];
+	    		if(p.imgText && p.imgText.length > 0){
+	    			imgText = p.imgText.split("|||");
+		    	}
+		    	var audio = [];
+		    	if(p.audio && p.audio.length > 0){
+		    		audio = p.audio.split("|||");
+		    	}
+		    	
+		    	p.images = [];
+		    	p.sounds = [];
+		    	for(var i=0; i<img.length; i++){
+		    		if(img[i] == ""){
+		    			continue;
+		    		}
+		    		p.images.push({url: img[i] || "", title:imgText[i] || ""});
+		    	}
+		    	for(var i=0; i<audio.length; i++){
+		    		if(audio[i] == ""){
+		    			continue;
+		    		}
+		    		p.sounds.push({url: audio[i]});
+		    	}
+	    	});
+	    	
+	    	$scope.article = article;
+	    },function(error){
+	    	console.log(error);
+	    });
+	});
+	
+	function QueryString(key){
+	    var paras = location.search;
+	    if(paras){
+	        var arr = paras.substr(1).split("&"),data;
+	        for(i in arr){
+	            data = arr[i].split("=");
+	            if(data[0] == key){
+	                return data[1]
+	            }
+	        }
+	    }
+	}
+</script>
+</body>
+</html> 

@@ -1,0 +1,87 @@
+*.class
+.classpath
+.project
+*.iml
+*.~vsdx
+bin/
+.settings/
+.idea/
+
+node_modules
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+#build output folder for grails
+build/
+
+#gradle temp folder
+.gradle/
+
+# Python 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django log:
+*.log
+
+# Ulysses meta
+*.Ulysses-Group.plist
+
+django-poc/_project
+build/
+.gradle/
+*.iws
+*Db.properties
+*Db.script
+.settings
+stacktrace.log
+/*.zip
+/plugin.xml
+/*.log
+/*DB.*
+/cobertura.ser
+.DS_Store
+/target/
+/out/
+/web-app/plugins
+/web-app/WEB-INF/classes
+/.link_to_grails_plugins/
+/target-eclipse/
+/bin/
+
+.zedstate
+bower_components
+poc/log/
+plugin/log/
