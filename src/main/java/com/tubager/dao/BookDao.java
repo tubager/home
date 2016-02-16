@@ -138,7 +138,7 @@ public class BookDao {
 	}
 	
 	public List<TBook> listTop(){
-		List<TBook> books = jdbcTemplate.query("select * from book limit 5", new Object[] {},
+		List<TBook> books = jdbcTemplate.query("select * from book order by date_created desc limit 5", new Object[] {},
 				(rs, rowNum) ->{
 					TBook b = new TBook();
 					b.setUuid(rs.getString("uuid"));
