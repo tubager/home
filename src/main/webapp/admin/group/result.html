@@ -1,0 +1,70 @@
+﻿    <!DOCTYPE html>  
+    <html>  
+    <head>  
+        <title></title>  
+        <meta charset="utf-8">  
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+      
+        <script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+      
+        <script type="text/javascript">  
+      
+        </script> 
+    </head>  
+    <body>  
+      
+    <div id="container" class="container">  
+        
+    </div>  
+    
+    <div id="prize" style="margin-top: 20px;">
+    	<p>中奖名单：</p>
+    </div>
+      
+    <script>
+	    var reg = new RegExp("(^|&)" + "company" + "=([^&]*)(&|$)");
+	    var r = window.location.search.substr(1).match(reg);
+	    if (r){
+	    	var company = decodeURI(r[2]);
+	    	
+	    	$.ajax({
+	    		url: "/admin/group/list/" + company,
+	    		type: "GET",
+	    		success: function(data){
+	    			var count = 0;
+	    			var obj = [];
+	    			for(var p in data){
+	    				if(p){
+	    					if(!obj[data[p] - 1]){
+	    						obj[data[p] - 1] = [];
+	    						count ++;
+	    					}
+	    					obj[data[p] - 1].push(p);
+	    				}
+	    			}
+	    			var str = "";
+	    			for(var i=0; i<count; i++){
+	    				if(obj[i]){
+	    					str = "第"+(i+1)+"组: " + obj[i].join(",") + "\n";
+		    				var div = document.createElement("div");
+		    				div.innerHTML = str;
+		    				document.getElementById("container").appendChild(div);
+	    				}
+	    			}
+	    		}
+	    	});
+	    	
+	    	$.ajax({
+	    		url: "/admin/group/listprize/" + company,
+	    		type: "GET",
+	    		success: function(data){
+	    			var div = document.createElement("div");
+    				div.innerHTML = data.join(", ");
+    				document.getElementById("prize").appendChild(div);
+	    		}
+	    	});
+	    }
+    	
+    </script>
+    </body>  
+    </html>  

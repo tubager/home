@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>途八哥H5</title>
+    <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1,maximum-scale=1"/>
+    <link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css" /> 
+    <script src="/js/jquery-2.1.1.js"></script>
+    <script src="/js/jquery.mobile-1.4.5.min.js"></script>
+    
+    <!--==== All Stylesheet ==-->
+		
+		<!-- default bootstrap css -->
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+		
+		<!-- font-awesome css -->
+        <link rel="stylesheet" type="text/css" href="/home/css/font-awesome.min.css" />
+		
+		<!-- wow animation css -->
+		<link rel="stylesheet" type="text/css" href="/home/css/animate.css" />
+		
+		<!-- page preloader -->
+		<link rel="stylesheet" type="text/css" href="/home/css/preloader.css" />
+    
+	<!-- wow animation css -->
+	<script type="text/javascript" src="/home/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/home/js/jquery.stellar.min.js"></script>	
+	<script type="text/javascript" src="/home/js/jquery.waypoints.min.js"></script>
+	<script type="text/javascript" src="/home/js/jquery.counterup.min.js"></script>	
+	<script type="text/javascript" src="/home/js/wow.min.js"></script>		
+	<script type="text/javascript" src="/home/js/jquery.fitvids.min.js"></script>		
+	<script type="text/javascript" src="/home/js/custom-script.js"></script>
+</head>
+
+<body style="font-family:Microsoft Yahei;text-align:center;">
+  <div data-role="page" id="article1">
+    <div data-role="content" style="background: #4e8ef7;color: white;height: 100vh;">
+      <div style="margin-top: 30%;">
+      	<h2 class="wow zoomIn" data-wow-delay="500ms" data-wow-duration="1000ms">独特体验式创意旅行</h2>
+      	<p class="wow bounceIn" data-wow-delay="800ms" data-wow-duration="1000ms" style="margin-top: 40px;">途八哥让旅行从此不再千篇一律</p>
+      </div>
+    </div>
+  </div>
+
+  <div data-role="page" id="article2">
+    <div data-role="content" style="background: #3eb249;color: white;height: 100vh;">
+      <div style="margin-top: 30%;">
+      	<h2 class="wow fadeIn" data-wow-delay="500ms" data-wow-duration="1000ms">深度定制化服务</h2>
+      	<p class="wow lightSpeedIn" data-wow-delay="800ms" data-wow-duration="1000ms" style="margin-top: 40px;">途八哥让旅行从此也有了私人订制的高贵专属感</p>
+      </div>
+    </div>
+  </div>
+
+  <div data-role="page" id="article3">
+    <div data-role="content" style="background: #D2691E;color: white;height: 100vh;">
+      <div style="margin-top: 30%;">
+      	<h2 class="wow rotateIn" data-wow-delay="500ms" data-wow-duration="1000ms">多平台在线游记工具</h2>
+      	<p class="wow rollIn" data-wow-delay="800ms" data-wow-duration="1000ms" style="margin-top: 40px;">途八哥让旅行从此也有了永不间断的美好回忆</p>
+      </div>
+    </div>
+  </div>
+
+  <div data-role="page" id="article4">
+    <div data-role="content" style="background: #00CED1;color: white;height: 100vh;">
+      <div style="margin-top: 30%;">
+      	<h2 class="wow slideInUp" data-wow-delay="500ms" data-wow-duration="1000ms">成为途友达人</h2>
+      	<p class="wow slideInDown" data-wow-delay="800ms" data-wow-duration="1000ms" style="margin-top: 40px;">途八哥让旅行从此也能成为职业</p>
+      </div>
+    </div>
+  </div>
+	<script>
+	(function() {
+    var supportTouch = $.support.touch,
+            scrollEvent = "touchmove scroll",
+            touchStartEvent = supportTouch ? "touchstart" : "mousedown",
+            touchStopEvent = supportTouch ? "touchend" : "mouseup",
+            touchMoveEvent = supportTouch ? "touchmove" : "mousemove";
+    $.event.special.swipeupdown = {
+        setup: function() {
+            var thisObject = this;
+            var $this = $(thisObject);
+            $this.bind(touchStartEvent, function(event) {
+                var data = event.originalEvent.touches ?
+                        event.originalEvent.touches[ 0 ] :
+                        event,
+                        start = {
+                            time: (new Date).getTime(),
+                            coords: [ data.pageX, data.pageY ],
+                            origin: $(event.target)
+                        },
+                        stop;
+
+                function moveHandler(event) {
+                    if (!start) {
+                        return;
+                    }
+                    var data = event.originalEvent.touches ?
+                            event.originalEvent.touches[ 0 ] :
+                            event;
+                    stop = {
+                        time: (new Date).getTime(),
+                        coords: [ data.pageX, data.pageY ]
+                    };
+
+                    // prevent scrolling
+                    if (Math.abs(start.coords[1] - stop.coords[1]) > 10) {
+                        event.preventDefault();
+                    }
+                }
+                $this
+                        .bind(touchMoveEvent, moveHandler)
+                        .one(touchStopEvent, function(event) {
+                    $this.unbind(touchMoveEvent, moveHandler);
+                    if (start && stop) {
+                        if (stop.time - start.time < 1000 &&
+                                Math.abs(start.coords[1] - stop.coords[1]) > 30 &&
+                                Math.abs(start.coords[0] - stop.coords[0]) < 75) {
+                            start.origin
+                                    .trigger("swipeupdown")
+                                    .trigger(start.coords[1] > stop.coords[1] ? "swipeup" : "swipedown");
+                        }
+                    }
+                    start = stop = undefined;
+                });
+            });
+        }
+    };
+    $.each({
+        swipedown: "swipeupdown",
+        swipeup: "swipeupdown"
+    }, function(event, sourceEvent){
+        $.event.special[event] = {
+            setup: function(){
+                $(this).bind(sourceEvent, $.noop);
+            }
+        };
+    });
+
+})();
+		$(document).on('swipeup', '.ui-page', function(event){    
+			if(event.handled !== true) // This will prevent event triggering more then once
+			{    
+				var nextpage = $.mobile.activePage.next('[data-role="page"]');
+				// swipe using id of next page if exists
+				if (nextpage.length > 0) {
+					$.mobile.changePage(nextpage, {transition: "slideup", reverse: false}, true, true);
+				}
+				event.handled = true;
+			}
+			return false;         
+		});
+		$(document).on('swipeleft', '.ui-page', function(event){    
+			if(event.handled !== true) // This will prevent event triggering more then once
+			{    
+				var nextpage = $.mobile.activePage.next('[data-role="page"]');
+				// swipe using id of next page if exists
+				if (nextpage.length > 0) {
+					$.mobile.changePage(nextpage, {transition: "slide", reverse: false}, true, true);
+				}
+				event.handled = true;
+			}
+			return false;         
+		});
+
+		$(document).on('swipedown', '.ui-page', function(event){     
+			if(event.handled !== true) // This will prevent event triggering more then once
+			{      
+				var prevpage = $(this).prev('[data-role="page"]');
+				if (prevpage.length > 0) {
+					$.mobile.changePage(prevpage, {transition: "slidedown", reverse: false}, true, true);
+				}
+				event.handled = true;
+			}
+			return false;            
+		});
+		$(document).on('swiperight', '.ui-page', function(event){     
+			if(event.handled !== true) // This will prevent event triggering more then once
+			{      
+				var prevpage = $(this).prev('[data-role="page"]');
+				if (prevpage.length > 0) {
+					$.mobile.changePage(prevpage, {transition: "slide", reverse: true}, true, true);
+				}
+				event.handled = true;
+			}
+			return false;            
+		});
+	</script>
+</body>
+</html>

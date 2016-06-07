@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>  
+<html>  
+    <head>  
+        <title></title>  
+        <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	    <title>分组初始化</title>
+	
+	    <link href="/css/bootstrap.min.css" rel="stylesheet">
+	
+	    <link href="/css/animate.css" rel="stylesheet">
+	    <link href="/css/style.css" rel="stylesheet">
+        <script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+    </head>  
+    <body style="background-color: #f9f9f9;">  
+      
+    <div id="container" class="container" style="max-width: 600px;margin-top:20px;">
+        <div class="form-group">
+            <input type="text" class="form-control" id="companyCode" placeholder="公司代码" value="" required="">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" id="groupCount" placeholder="分组数" value="" required="">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" id="prizeCount" placeholder="获奖人数" value="" required="">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" id="users" placeholder="参与人，用逗号分隔，不要留空格" ></textarea>
+        </div>
+        <button id="submit" onclick="submit()" class="btn btn-primary block full-width m-b">提交</button>
+    </div>
+      
+    <script>
+    	function submit (){
+    		var company = document.getElementById("companyCode").value;
+    		if(!company){
+    			alert("公司代码不能为空");
+    			return;
+    		}
+    		
+    		$.ajax({
+    			url: "/admin/group/init/" + company,
+    			type: "GET",
+    			success: function(data){
+    				if(data == 1){
+    					alert("公司代码已经存在");
+    				}
+    				else if(data == -1){
+    					alert("公司代码不能为空");
+    				}
+    				else{
+    					uploadUser();
+    				}
+    			},
+    			error: function(data){
+    				alert("初始化失败");
+    			}
+    		});
+    	}
+    	
+    	function uploadUser(){
+    		var company = document.getElementById("companyCode").value;
+    		var users = document.getElementById("users").value;
+    		var groupCount = document.getElementById("groupCount").value || 1;
+    		var prizeCount = document.getElementById("prizeCount").value || 0;
+    		var data = {
+    				users: users,
+    				groupCount: parseInt(groupCount),
+    				prizeCount: parseInt(prizeCount)
+    		};
+    		
+    		$.ajax({
+    			url: "/admin/group/users/" + company,
+    			type: "POST",
+				contentType: "application/json;charset=UTF-8",
+    			data: JSON.stringify(data),
+    			success: function(d){
+    				alert("数据上传成功");
+    			}
+    		});
+    	}
+    </script>
+    </body>  
+</html>  

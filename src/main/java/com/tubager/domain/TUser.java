@@ -16,9 +16,16 @@ public class TUser {
 	private String address;
 	private String region;
 	private String lastWord;
+	RoleEnum role = RoleEnum.USER;
 	private Date dateCreated;
 	private Date lastUpdated;
 
+	public RoleEnum getRole() {
+		return role;
+	}
+	public void setRole(RoleEnum role) {
+		this.role = role;
+	}
 	public String getTechId() {
 		return techId;
 	}

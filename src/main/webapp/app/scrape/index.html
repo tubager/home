@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0">
+<title></title>
+<style type="text/css">
+.demo{width:320px; margin:30px auto 20px auto; min-height:200px;}
+.msg{text-align:center; height:32px; line-height:32px; font-weight:bold; margin-top:50px}
+#input-container{
+	line-height: 30px;
+	font-size: 20px;
+	display: block;
+	margin: 10px auto;
+	width: 250px;
+}
+input{
+	border-width: 0px;
+    height: 45px;
+    border-radius: 20px;
+    padding-left: 20px;
+}
+button{
+	min-height: 40px;
+	background: transparent;
+	border: 2px solid white;
+    padding: 5px;
+    border-radius: 5px;
+    color: white !important;
+    margin-top: 40px;
+}
+</style>
+<!-- default bootstrap css -->
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+		
+		<!-- font-awesome css -->
+        <link rel="stylesheet" type="text/css" href="/home/css/font-awesome.min.css" />
+		
+		<!-- wow animation css -->
+		<link rel="stylesheet" type="text/css" href="/home/css/animate.css" />
+		
+		<!-- page preloader -->
+		<link rel="stylesheet" type="text/css" href="/home/css/preloader.css" />
+		
+		<!-- wow animation css -->		
+	<script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+	<script type="text/javascript" src="/home/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/home/js/jquery.stellar.min.js"></script>	
+	<script type="text/javascript" src="/home/js/jquery.waypoints.min.js"></script>
+	<script type="text/javascript" src="/home/js/jquery.counterup.min.js"></script>	
+	<script type="text/javascript" src="/home/js/wow.min.js"></script>		
+	<script type="text/javascript" src="/home/js/jquery.fitvids.min.js"></script>	
+	<script type="text/javascript" src="/home/js/custom-script.js"></script>
+</head>
+
+<body style="-webkit-user-select: none;height: 100vh;background-color: mediumturquoise;">
+<div id="header" style="text-align:center;font-size: 34px;margin-top: 20px;font-weight: bold;color: white;">
+	<div class="wow zoomIn" data-wow-delay="500ms" data-wow-duration="1000ms">
+		永远的5班毕业旅行
+	</div>
+</div>
+
+<div id="main">
+	<div id="input" class="demo" style="width:100%">
+		<div id="input-container">
+			<input id="name" type="text" placeholder="请输入你的全名" class="wow lightSpeedIn" data-wow-delay="800ms" data-wow-duration="1000ms"/>
+		</div>
+		<div style="display:block;margin:20px auto;width:75px;">
+			<button id="btn" class="wow bounceIn" data-wow-delay="1000ms" data-wow-duration="1000ms" style="">查看分组</button>
+		</div>
+	</div>
+   <div id="result" class="demo" style="display:none;">
+   		<div id="group" style="display:none;position:absolute;font-size: 60px;width: 320px;text-align: center;margin-top: 60px;">6</div>
+   		<canvas></canvas>
+   		<div style="position:relative;top:170px;color:white;font-size:20px;text-align:center;">
+   			快来刮刮看吧
+   		</div>
+   </div>
+</div>
+
+<script>
+function initCanvas(){
+	var bodyStyle = document.body.style;
+
+	bodyStyle.mozUserSelect = 'none';
+	bodyStyle.webkitUserSelect = 'none';
+
+	var img = new Image();
+	var canvas = document.querySelector('canvas');
+	canvas.style.backgroundColor='transparent';
+	canvas.style.position = 'absolute';
+	img.src = 'p_0.jpg';
+
+	img.addEventListener('load', function(e) {
+		var ctx;
+	    var w = img.width,
+	    	h = img.height;
+	    var offsetX = canvas.offsetLeft,
+	    	offsetY = canvas.offsetTop;
+	    var mousedown = false;
+
+	    function layer(ctx) {
+	        ctx.fillStyle = 'gray';
+	        ctx.fillRect(0, 0, 320, 160);
+	    }
+
+	    function eventDown(e){
+	        e.preventDefault();
+	        mousedown=true;
+	    }
+
+	    function eventUp(e){
+	        e.preventDefault();
+	        mousedown=false;
+	    }
+
+	    function eventMove(e){
+	        e.preventDefault();
+	        if(mousedown) {
+	             if(e.changedTouches){
+	                 e=e.changedTouches[e.changedTouches.length-1];
+	             }
+	             var x = (e.clientX + document.body.scrollLeft || e.pageX) - offsetX || 0,
+	                 y = (e.clientY + document.body.scrollTop || e.pageY) - offsetY || 0;
+	             with(ctx) {
+	                 beginPath()
+	                 arc(x, y, 10, 0, Math.PI * 2);
+	                 fill();
+	             }
+	        }
+	    }
+
+	    canvas.width=w;
+	    canvas.height=h;
+	    canvas.style.backgroundImage='url('+')';
+	    ctx=canvas.getContext('2d');
+	    ctx.fillStyle='transparent';
+	    ctx.fillRect(0, 0, w, h);
+	    layer(ctx);
+
+	    ctx.globalCompositeOperation = 'destination-out';
+
+	    canvas.addEventListener('touchstart', eventDown);
+	    canvas.addEventListener('touchend', eventUp);
+	    canvas.addEventListener('touchmove', eventMove);
+	    canvas.addEventListener('mousedown', eventDown);
+	    canvas.addEventListener('mouseup', eventUp);
+	    canvas.addEventListener('mousemove', eventMove);
+		$("#group").css("display","block");
+	});
+}
+
+	$(document).ready(function(){
+		$("#btn").click(function(){
+			var name = $("#name").val();
+			if(!name){
+				return;
+			}
+			$.ajax({
+				url: "/group/get?name=" + name,
+				type: "GET",
+				success: function(data){
+					$("#input").css("display","none");
+					$("#result").css("display","block");
+					initCanvas();
+					$("#group").text(data);
+				}
+			});
+		});
+		
+		$("#name").on("focus", function(){
+			$("#footer").css("display", "none");
+		});
+		
+		$("#name").on("blur", function(){
+			$("#footer").css("display", "block");
+		});
+	});
+</script>
+
+<script type="text/javascript">
+
+</script>
+<div id="footer" style="position:fixed; bottom: 15px;width:100%;z-index:999999;">
+	<div class="wow fadeIn" data-wow-delay="1200ms" data-wow-duration="1000ms">
+		<img style="display:block;margin:10px auto;width:130px;" src="/img/qrcode.jpg"/>
+	</div>
+	<div class="wow rotateIn" data-wow-delay="1200ms" data-wow-duration="1000ms">
+		<p style="text-align: center;color:white;font-size:23px;">途八哥创意旅行网</p>
+		<p style="text-align: center;color:white;font-size:19px;">www.tubager.com</p>
+	</div>
+</div>
+</body>
+</html>
