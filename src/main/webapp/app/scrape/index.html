@@ -50,13 +50,14 @@ button{
 	<script type="text/javascript" src="/home/js/jquery.counterup.min.js"></script>	
 	<script type="text/javascript" src="/home/js/wow.min.js"></script>		
 	<script type="text/javascript" src="/home/js/jquery.fitvids.min.js"></script>	
-	<script type="text/javascript" src="/home/js/custom-script.js"></script>
+	<script type="text/javascript" src="/home/js/custom-script.js"></script>	
+	<script type="text/javascript" src="/js/Utility.js"></script>
 </head>
 
 <body style="-webkit-user-select: none;height: 100vh;background-color: mediumturquoise;">
 <div id="header" style="text-align:center;font-size: 34px;margin-top: 20px;font-weight: bold;color: white;">
 	<div class="wow zoomIn" data-wow-delay="500ms" data-wow-duration="1000ms">
-		永远的5班毕业旅行
+		途八哥创意旅行网欢迎您
 	</div>
 </div>
 
@@ -70,7 +71,10 @@ button{
 		</div>
 	</div>
    <div id="result" class="demo" style="display:none;">
-   		<div id="group" style="display:none;position:absolute;font-size: 60px;width: 320px;text-align: center;margin-top: 60px;">6</div>
+   		<div id="group" style="display:none;position:absolute;font-size: 30px;width: 320px;text-align: center;margin-top: 60px;">
+   			<div id="groupNo"></div>
+   			<div id="prize" style="font-size: 20px;"></div>
+   		</div>
    		<canvas></canvas>
    		<div style="position:relative;top:170px;color:white;font-size:20px;text-align:center;">
    			快来刮刮看吧
@@ -151,19 +155,27 @@ function initCanvas(){
 }
 
 	$(document).ready(function(){
+		var company = tbgUtil.getUrlParam("company");
 		$("#btn").click(function(){
 			var name = $("#name").val();
 			if(!name){
 				return;
 			}
 			$.ajax({
-				url: "/group/get?name=" + name,
+				url: "/group/get/" + company + "?name=" + name,
 				type: "GET",
 				success: function(data){
+					if(!data){
+						alert("请输入正确的名字");
+						return;
+					}
 					$("#input").css("display","none");
 					$("#result").css("display","block");
 					initCanvas();
-					$("#group").text(data);
+					$("#groupNo").text("第 "+data.group+" 组");
+					if(data.prize){
+						$("#prize").text("中奖啦！");
+					}
 				}
 			});
 		});

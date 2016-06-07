@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -97,6 +98,10 @@ public class GroupController {
 		Map<String, Integer> map = companyGroupMap.get(company);
 		int idx = companyIndexMap.get(company);
 		if(map.get(name) == null){
+			List<String> nameList = companyMap.get(company);
+			if(!nameList.contains(name)){
+				return null;
+			}
 			int groupCount = companyGroupCountMap.get(company);
 			map.put(name, (idx % groupCount)+1);
 			idx++;
@@ -123,7 +128,15 @@ public class GroupController {
 	@RequestMapping(value="/admin/group/listprize/{company}", method=RequestMethod.GET )
 	public List<String> listPrize(@PathVariable String company){
 		List<String> list = companyPrizeMap.get(company);
-		return list;
+		Map<String, Integer> group = companyGroupMap.get(company);
+		Set<String> set = group.keySet();
+		List<String> result = new ArrayList<String>();
+		for(String name : list){
+			if(set.contains(name)){
+				result.add(name);
+			}
+		}
+		return result;
 	}
 }
 
