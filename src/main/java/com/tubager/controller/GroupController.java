@@ -44,6 +44,7 @@ public class GroupController {
 	public void setUsers(@PathVariable String company, @RequestBody UserData userData){
 		this.clearCompanyData(company);
 		String user = userData.getUsers();
+		System.out.println(user);
 		String[] users = user.split(",");
 		List<String> list = companyMap.get(company);
 		list.clear();
@@ -96,6 +97,7 @@ public class GroupController {
 	@RequestMapping(value="/group/get/{company}", method=RequestMethod.GET )
 	public GroupData getGroup(@PathVariable String company, @RequestParam("name")String name){
 		Map<String, Integer> map = companyGroupMap.get(company);
+		System.out.println(name);
 		int idx = companyIndexMap.get(company);
 		if(map.get(name) == null){
 			List<String> nameList = companyMap.get(company);

@@ -62,6 +62,8 @@
     	function uploadUser(){
     		var company = document.getElementById("companyCode").value;
     		var users = document.getElementById("users").value;
+    		users = users.replace(/，/g,",");
+    		console.log(users);
     		var groupCount = document.getElementById("groupCount").value || 1;
     		var prizeCount = document.getElementById("prizeCount").value || 0;
     		var data = {
