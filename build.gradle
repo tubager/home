@@ -51,6 +51,11 @@ dependencies {
     compile('net.sf.ehcache:ehcache-core:2.6.9') {
         exclude group: 'commons-logging'
     }
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	compile "commons-io:commons-io:2.4"
+	compile "commons-lang:commons-lang:2.6"
+	compile "org.apache.httpcomponents:httpclient:4.3.2"
+	compile "org.apache.httpcomponents:httpmime:4.3.3"
     
     testCompile('org.springframework.boot:spring-boot-starter-test') 
 }

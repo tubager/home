@@ -1,0 +1,201 @@
+﻿    <!DOCTYPE html>  
+    <html>  
+    <head>  
+        <title></title>  
+        <meta charset="utf-8">  
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+      
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+	    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    	<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	    <link href="/css/animate.css" rel="stylesheet">
+	    <link href="/css/style.css" rel="stylesheet">
+	    <!-- Sweet Alert -->
+	    <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	    
+        <script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+    	<script src="/js/bootstrap.min.js"></script>
+	    <!-- Sweet alert -->
+	    <script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+	    
+	    <script src="/js/plugins/toastr/toastr.min.js"></script>
+		<script src="/js/tbg/utility.js"></script>
+		<style>
+        	body{
+        		font-family:Microsoft Yahei,"open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        		padding: 10px;
+        	}
+        	.media-body .menu-title{
+        		color: grey;
+        	}
+        	.media-body .menu-title i{
+        		margin-right: 5px;
+        	}
+        	.media-body .menu-description{
+        		color: grey;
+        	}
+        	.media-body a{
+        		margin: 3px;
+        	}
+        </style>
+    </head>  
+    <body style="background-color: #f9f9f9; padding: 10px;"> 
+    	<div class="ibox float-e-margins">
+    		<div class="ibox-title">
+                <div class="input-group">
+		    		<input id="codeInput" type="text" placeholder="活动代码" class="form-control"/>
+		    		<span class="input-group-btn">
+		    			<button type="button" onclick="submit()" class="btn btn-primary">管理分组</button>
+		    		</span>
+		    	</div>
+            </div>
+            <div class="ibox-content">
+            	<div id="feed-list" class="feed-activity-list">
+            		
+            	</div>
+            </div>
+    	</div>
+    	<div class="modal inmodal fade" id="renameModal" tabindex="-1" role="dialog"  aria-hidden="true">
+           <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                   <div class="modal-body">
+                   		<label style="margin-top:10px;">小组名称</label>
+                   		<input id="group-name-input" class="form-control" placeholder="小组名称" ></input>
+                   </div>
+                   <div class="modal-footer">
+                       <button type="button" class="btn btn-white" id="nameCancelBtn" data-dismiss="modal">取消</button>
+                       <button type="button" class="btn btn-primary" id="nameBtn">确定</button>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div class="modal inmodal fade" id="scoreModal" tabindex="-1" role="dialog"  aria-hidden="true">
+           <div class="modal-dialog modal-lg">
+               <div class="modal-content">
+                   <div class="modal-body">
+                   		<label style="margin-top:10px;">增加的积分（负数为减少）</label>
+                   		<input id="group-score-input" type="number" class="form-control" value="0" ></input>
+                   		<label style="margin-top:10px;">调整积分理由</label>
+                   		<input id="group-reason-input" type="text" class="form-control" placeholder="" ></input>
+                   </div>
+                   <div class="modal-footer">
+                       <button type="button" class="btn btn-white" id="scoreCancelBtn" data-dismiss="modal">取消</button>
+                       <button type="button" class="btn btn-primary" id="scoreBtn">确定</button>
+                   </div>
+               </div>
+           </div>
+       </div>
+    <script>
+    	var groups;
+    	var groupList = [];
+    	var company;
+    	var group;
+    	
+    	$("#feed-list").click("a.btn", function(evt){
+    		var target = evt.target;
+    		group = target.dataset["group"];
+    		var action = target.dataset["action"];
+    		
+    		if(action == "name"){
+    			$("#group-name-input").val(groups[group] || "");
+    			$("#renameModal").modal("show");
+    		}
+    		else if(action == "score"){
+    			$("#scoreModal").modal("show");
+    		}
+    	});
+    	
+    	$("#nameBtn").click(function(evt){
+    		var data = {group: group, name: $("#group-name-input").val() || groups[group]};
+    		$.ajax({
+    			url: "/admin/group/groupname/" + company,
+    			type: "POST",
+    			data: JSON.stringify(data),
+				contentType:"application/json;charset=UTF-8",
+				success: function(){
+					loadGroupNames();
+				}
+    		});
+    		$("#renameModal").modal("hide");
+    	});
+    	
+    	$("#scoreBtn").click(function(evt){
+    		var data = {group: group, score: $("#group-score-input").val() || 0, log: $("#group-reason-input").val()};
+    		$.ajax({
+    			url: "/admin/group/groupscore/" + company,
+    			type: "POST",
+    			data: JSON.stringify(data),
+				contentType:"application/json;charset=UTF-8",
+				success: function(){
+					loadGroupNames();
+				}
+    		});
+    		$("#scoreModal").modal("hide");
+    	});
+    	
+    	function submit(){
+    		company = document.getElementById("codeInput").value;
+    		if(!company){
+    			tbgUtil.showMessage("error", "活动代码不能为空");
+    			return;
+    		}
+    		loadGroupNames();
+    	}
+    	
+    	function loadGroupNames(){
+    		$.ajax({
+    			url: "/admin/group/groupname/" + company,
+    			type: "GET",
+    			success: function(data){
+    				groups = data;
+    				loadGroupData(company);
+    			}
+    		});
+    	}
+    	
+    	function loadGroupData(){
+    		$.ajax({
+	    		url: "/group/groupscore/" + company,
+	    		type: "GET",
+	    		success: function(data){
+	    			groupList = [];
+	    			for(var i in groups){
+	    				groupList.push({
+	    					group: i,
+	    					name: groups[i],
+	    					score: data[i] || 0
+	    				});
+	    			}
+	    			groupList = groupList.sort(function(a, b){
+	    				return b.score - a.score;
+	    			});
+	    			render(groupList);
+	    		}
+	    	});
+    		
+    		function render(groupList){
+    			var root = document.getElementById("feed-list");
+    			root.innerHTML = "";
+    			groupList.map(function(g){
+    				var node = document.createElement("div");
+    				node.classList.add("feed-element");
+    				var arr = [];
+    				arr.push('<div class="media-body ">');
+    				arr.push('<h4 class="menu-title">');
+    				arr.push(g.name + ": " + g.score);
+    				arr.push('</h4>');
+    				arr.push('<div>');
+    				arr.push('<a class="btn btn-primary btn-outline pull-right" data-action="score" data-group="'+g.group+'">增减积分</a>');
+    				arr.push('<a class="btn btn-primary btn-outline pull-right" data-action="name" data-group="'+g.group+'">更改名称</a>');
+    				arr.push('<div style="clear: both;"></div>');
+    				arr.push('</div>')
+    				arr.push('</div>');
+    				node.innerHTML = arr.join("");
+    				root.appendChild(node);
+    			});
+    		}
+    	}
+    	
+    </script>
+    </body>  
+    </html>  

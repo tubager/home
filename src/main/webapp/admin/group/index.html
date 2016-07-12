@@ -1,0 +1,87 @@
+<!DOCTYPE html>  
+<html>  
+    <head>  
+        <title></title>  
+        <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	    <title>管理控制中心</title>
+	
+	    <link href="/css/bootstrap.min.css" rel="stylesheet">
+	    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	    <link href="/css/animate.css" rel="stylesheet">
+	    <link href="/css/style.css" rel="stylesheet">
+        <script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+        <style>
+        	body{
+        		font-family:Microsoft Yahei,"open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        		padding: 10px;
+        	}
+        	.media-body .menu-title i{
+        		margin-right: 5px;
+        	}
+        	.media-body .menu-description{
+        		color: grey;
+        	}
+        </style>
+    </head>  
+    <body style="background-color: #f9f9f9;">  
+     	<div class="ibox float-e-margins">
+     		<div class="ibox-title">
+                <h5>途八哥活动管理中心</h5>
+            </div>
+            <div class="ibox-content">
+				<div class="feed-activity-list">
+					<div class="feed-element">
+						<a href="/admin/group/setup.html">
+							<div class="media-body ">
+								<h4 class="menu-title text-info"><i class="fa fa-paper-plane-o"></i>活动初始化</h4>
+								<div class="menu-description">设置活动代码，分组数，中奖人数，录入参加活动人员名单</div>
+							</div>
+						</a>
+					</div>
+					<div class="feed-element">
+						<a href="/admin/group/update.html">
+							<div class="media-body ">
+								<h4 class="menu-title text-info"><i class="fa fa-refresh"></i>活动数据更新</h4>
+								<div class="menu-description">更新活动数据，该操作将会清除已产生的活动数据</div>
+							</div>
+						</a>
+					</div>
+					<div class="feed-element">
+						<a href="/admin/group/remove.html">
+							<div class="media-body ">
+								<h4 class="menu-title text-info"><i class="fa fa-trash-o"></i>活动删除</h4>
+								<div class="menu-description">清除该活动的全部数据，释放活动代码</div>
+							</div>
+						</a>
+					</div>
+					<div class="feed-element">
+						<a href="/admin/group/clear.html">
+							<div class="media-body ">
+								<h4 class="menu-title text-info"><i class="fa fa-mail-reply"></i>活动重置</h4>
+								<div class="menu-description">清除该活动的分组等数据，保留活动代码</div>
+							</div>
+						</a>
+					</div>
+					<div class="feed-element">
+						<a href="/admin/group/result.html">
+							<div class="media-body ">
+								<h4 class="menu-title text-info"><i class="fa fa-eye"></i>活动结果查看</h4>
+								<div class="menu-description">查看分组结果，中奖人数以及小组成绩</div>
+							</div>
+						</a>
+					</div>
+					<div class="feed-element">
+						<a href="/admin/group/manage.html">
+							<div class="media-body ">
+								<h4 class="menu-title text-info"><i class="fa fa-pencil-square-o"></i>分组管理</h4>
+								<div class="menu-description">对小组进行积分加减操作，更改分组名称</div>
+							</div>
+						</a>
+					</div>
+				</div>
+            </div>  
+     	</div>
+    </body>  
+</html>  

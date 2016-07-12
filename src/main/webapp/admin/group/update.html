@@ -5,13 +5,21 @@
         <meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	    <title>分组初始化</title>
+	    <title>分组更新</title>
 	
 	    <link href="/css/bootstrap.min.css" rel="stylesheet">
-	
+    	<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 	    <link href="/css/animate.css" rel="stylesheet">
 	    <link href="/css/style.css" rel="stylesheet">
+	    <!-- Sweet Alert -->
+	    <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	    
         <script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+	    <!-- Sweet alert -->
+	    <script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+	    
+	    <script src="/js/plugins/toastr/toastr.min.js"></script>
+		<script src="/js/tbg/utility.js"></script>
     </head>  
     <body style="background-color: #f9f9f9;">  
       
@@ -40,21 +48,18 @@
     		}
     		
     		$.ajax({
-    			url: "/admin/group/init/" + company,
+    			url: "/admin/group/exist/" + company,
     			type: "GET",
     			success: function(data){
-    				if(data == 1){
-    					alert("公司代码已经存在");
-    				}
-    				else if(data == -1){
-    					alert("公司代码不能为空");
+    				if(data != 1){
+    					tbgUtil.showMessage("error", "活动代码不存在");
     				}
     				else{
     					uploadUser();
     				}
     			},
     			error: function(data){
-    				alert("初始化失败");
+    				tbgUtil.showMessage("error", "检查活动代码出错");
     			}
     		});
     	}
@@ -78,7 +83,7 @@
 				contentType: "application/json;charset=UTF-8",
     			data: JSON.stringify(data),
     			success: function(d){
-    				alert("数据上传成功");
+    				tbgUtil.showMessage("success", "数据上传成功");
     			}
     		});
     	}

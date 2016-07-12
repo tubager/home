@@ -1,0 +1,75 @@
+<!DOCTYPE html>  
+<html>  
+    <head>  
+        <title></title>  
+        <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	    <title>清除数据</title>
+	
+	    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    	<link href="/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+	    <link href="/css/animate.css" rel="stylesheet">
+	    <link href="/css/style.css" rel="stylesheet">
+	    <!-- Sweet Alert -->
+	    <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+	    
+        <script type="text/javascript" src="/js/jquery-2.1.1.js"></script>  
+	    <!-- Sweet alert -->
+	    <script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+	    
+	    <script src="/js/plugins/toastr/toastr.min.js"></script>
+		<script src="/js/tbg/utility.js"></script>
+	    
+    </head>  
+    <body style="background-color: #f9f9f9;">  
+      	<h3 style="margin: 10px;">重置活动</h3>
+    <div id="container" class="container" style="max-width: 600px;margin-top:20px;">
+        <div class="form-group">
+            <input type="text" class="form-control" id="companyCode" placeholder="活动代码" value="" required="">
+        </div>
+        <button id="submit" onclick="submit()" class="btn btn-primary block full-width m-b">重置活动</button>
+    </div>
+      
+    <script>
+    	function submit(){
+    		var company = document.getElementById("companyCode").value;
+    		if(!company){
+    			tbgUtil.showMessage("error", "活动代码不能为空");
+    			return;
+    		}
+    		
+    		swal({
+                title: "确定重置?",
+                text: "活动重置，将会删除所有已产生的活动数据!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: true,
+                closeOnCancel: true },
+            function (isConfirm) {
+                if (isConfirm) {
+                	confirmSubmit(company);
+                } else {
+                    //swal("Cancelled", "Your imaginary file is safe :)", "error");
+                }
+            });
+    	}
+    	
+    	function confirmSubmit (company){
+    		$.ajax({
+    			url: "/admin/group/clear/" + company,
+    			type: "GET",
+    			success: function(data){
+    				tbgUtil.showMessage("success", "重置成功");
+    			},
+    			error: function(data){
+    				tbgUtil.showMessage("error", "重置失败");
+    			}
+    		});
+    	}
+    </script>
+    </body>  
+</html>  

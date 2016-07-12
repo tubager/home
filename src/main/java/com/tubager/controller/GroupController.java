@@ -19,9 +19,12 @@ public class GroupController {
 	
 	private static Map<String, List<String>> companyMap = new HashMap<String, List<String>>();
 	private static Map<String, Map<String, Integer>> companyGroupMap = new HashMap<String, Map<String, Integer>>();
+	private static Map<String, Map<Integer, String>> companyGroupNameMap = new HashMap<String, Map<Integer, String>>();
+	private static Map<String, Map<Integer, Double>> companyGroupScoreMap = new HashMap<String, Map<Integer, Double>>();
 	private static Map<String, Integer> companyIndexMap = new HashMap<String, Integer>();
 	private static Map<String, List<String>> companyPrizeMap = new HashMap<String, List<String>>();
 	private static Map<String, Integer> companyGroupCountMap = new HashMap<String, Integer>();
+	private static List<GroupLog> logs = new ArrayList<GroupLog>();
 	
 	@RequestMapping(value="/admin/group/init/{company}", method=RequestMethod.GET )
 	public int init(@PathVariable String company){
@@ -33,10 +36,23 @@ public class GroupController {
 		}
 		companyMap.put(company, new ArrayList<String>());
 		companyGroupMap.put(company, new HashMap<String, Integer>());
+		companyGroupNameMap.put(company, new HashMap<Integer, String>());
+		companyGroupScoreMap.put(company, new HashMap<Integer, Double>());
 		companyIndexMap.put(company, 0);
 		companyPrizeMap.put(company, new ArrayList<String>());
 		companyGroupCountMap.put(company, 0);
 		
+		return 0;
+	}
+	
+	@RequestMapping(value="/admin/group/exist/{company}", method=RequestMethod.GET )
+	public int checkExist(@PathVariable String company){
+		if(company == null || "".equalsIgnoreCase(company)){
+			return -1;
+		}
+		if(companyMap.get(company) != null){
+			return 1;
+		}
 		return 0;
 	}
 	
@@ -79,6 +95,12 @@ public class GroupController {
 	private void clearCompanyData(String company){
 		Map<String, Integer> m = companyGroupMap.get(company);
 		m.clear();
+		Map<Integer, String> mName = companyGroupNameMap.get(company);
+		mName.clear();
+		Map<Integer, Double> mScore = companyGroupScoreMap.get(company);
+		if(mScore != null){
+			mScore.clear();
+		}
 		List<String> list = companyPrizeMap.get(company);
 		list.clear();
 		companyIndexMap.put(company, 0);
@@ -89,6 +111,8 @@ public class GroupController {
 	public void removeCompany(@PathVariable String company){
 		companyMap.remove(company);
 		companyGroupMap.remove(company);
+		companyGroupNameMap.remove(company);
+		companyGroupScoreMap.remove(company);
 		companyIndexMap.remove(company);
 		companyPrizeMap.remove(company);
 		companyGroupCountMap.remove(company);
@@ -97,6 +121,7 @@ public class GroupController {
 	@RequestMapping(value="/group/get/{company}", method=RequestMethod.GET )
 	public GroupData getGroup(@PathVariable String company, @RequestParam("name")String name){
 		Map<String, Integer> map = companyGroupMap.get(company);
+		Map<Integer, String> groupNameMap = companyGroupNameMap.get(company);
 		System.out.println(name);
 		int idx = companyIndexMap.get(company);
 		if(map.get(name) == null){
@@ -105,7 +130,11 @@ public class GroupController {
 				return null;
 			}
 			int groupCount = companyGroupCountMap.get(company);
-			map.put(name, (idx % groupCount)+1);
+			int no = (idx % groupCount)+1;
+			map.put(name, no);
+			if(!groupNameMap.containsKey(no)){
+				groupNameMap.put(no, "ตฺ"+no+"ื้");
+			}
 			idx++;
 			companyIndexMap.put(company, idx);
 		}
@@ -121,10 +150,53 @@ public class GroupController {
 		return group;
 	}
 
+	@RequestMapping(value="/group/scorelog/{company}", method=RequestMethod.GET )
+	public List<GroupLog> getLog(@PathVariable String company, @RequestParam("group")int group){
+		List<GroupLog> logList = new ArrayList<GroupLog>();
+		for(GroupLog log : logs){
+			if(log.getCompany().equals(company) && log.getGroup() == group){
+				logList.add(log);
+			}
+		}
+		return logList;
+	}
+
 	@RequestMapping(value="/admin/group/list/{company}", method=RequestMethod.GET )
 	public Map<String, Integer> list(@PathVariable String company){
 		Map<String, Integer> map = companyGroupMap.get(company);
 		return map;
+	}
+	
+	@RequestMapping(value="/admin/group/groupname/{company}", method=RequestMethod.GET )
+	public Map<Integer, String> groupNameList(@PathVariable String company){
+		Map<Integer, String> map = companyGroupNameMap.get(company);
+		return map;
+	}
+
+	@RequestMapping(value="/group/groupscore/{company}", method=RequestMethod.GET )
+	public Map<Integer, Double> groupScoreList(@PathVariable String company){
+		Map<Integer, Double> map = companyGroupScoreMap.get(company);
+		return map;
+	}
+	
+	@RequestMapping(value="/admin/group/groupname/{company}", method=RequestMethod.POST )
+	public void setGroupName(@PathVariable String company, @RequestBody GroupData group){
+		Map<Integer, String> map = companyGroupNameMap.get(company);
+		if(map != null){
+			map.put(group.getGroup(), group.getName());
+		}
+	}
+	
+	@RequestMapping(value="/admin/group/groupscore/{company}", method=RequestMethod.POST )
+	public void changeGroupScore(@PathVariable String company, @RequestBody GroupLog group){
+		Map<Integer, Double> map = companyGroupScoreMap.get(company);
+		double score = 0;
+		if(map.containsKey(group.getGroup())){
+			score = map.get(group.getGroup());
+		}
+		score += group.getScore();
+		map.put(group.getGroup(), score);
+		logs.add(group);
 	}
 	
 	@RequestMapping(value="/admin/group/listprize/{company}", method=RequestMethod.GET )
@@ -142,10 +214,49 @@ public class GroupController {
 	}
 }
 
+class GroupLog{
+	private String company;
+	private int group;
+	private double score;
+	private String log;
+	
+	public String getCompany() {
+		return company;
+	}
+	public void setCompany(String company) {
+		this.company = company;
+	}
+	public int getGroup() {
+		return group;
+	}
+	public void setGroup(int group) {
+		this.group = group;
+	}
+	public double getScore() {
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
+	}
+	public String getLog() {
+		return log;
+	}
+	public void setLog(String log) {
+		this.log = log;
+	}
+}
+
 class GroupData{
 	private int group;
 	private boolean prize;
+	private String name;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public int getGroup() {
 		return group;
 	}
